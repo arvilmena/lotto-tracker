@@ -19,7 +19,7 @@
       }
     ],
     "paths": {
-      "@lotto-tracker/*": ["./*"]
+      "@lotto-tracker/ui": ["./packages/ui/index.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
