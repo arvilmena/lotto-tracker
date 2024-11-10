@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1731202602421,
+      "tag": "0000_nervous_johnny_storm",
+      "breakpoints": true
+    }
+  ]
+}
