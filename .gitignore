@@ -41,3 +41,7 @@ next-env.d.ts
 
 # local sqlite db
 /mydb.sqlite
+
+# app data
+/results
+/screenshots

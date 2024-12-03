@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "bunx --bun next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -16,13 +16,17 @@
     "db:studio": "bunx drizzle-kit studio"
   },
   "dependencies": {
+    "@date-fns/tz": "^1.2.0",
     "@libsql/client": "^0.14.0",
+    "date-fns": "^4.1.0",
     "drizzle-orm": "^0.36.1",
     "next": "15.0.3",
     "node-cron": "^3.0.3",
     "p-limit": "^6.1.0",
+    "puppeteer": "^23.7.1",
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "tabletojson": "^4.1.5"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.2",

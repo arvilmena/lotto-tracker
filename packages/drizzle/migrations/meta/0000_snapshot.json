@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b3358537-5e4e-498c-a545-56765cf640f3",
+  "id": "10d9dc6d-70c1-4bf6-adad-075e7fafd1c4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "lotto": {
@@ -93,10 +93,15 @@
           "columns": ["lotto_id"],
           "isUnique": false
         },
+        "lottoResult_drawAt": {
+          "name": "lottoResult_drawAt",
+          "columns": ["drawAt"],
+          "isUnique": false
+        },
         "lottoResult_lottoId_drawAt": {
           "name": "lottoResult_lottoId_drawAt",
           "columns": ["lotto_id", "drawAt"],
-          "isUnique": false
+          "isUnique": true
         }
       },
       "foreignKeys": {
@@ -105,6 +110,65 @@
           "tableFrom": "lotto_result",
           "tableTo": "lotto",
           "columnsFrom": ["lotto_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "lotto_result__number": {
+      "name": "lotto_result__number",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "lotto_result_id": {
+          "name": "lotto_result_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "number": {
+          "name": "number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "lottoResultNumber_lottoResultId_number": {
+          "name": "lottoResultNumber_lottoResultId_number",
+          "columns": ["lotto_result_id", "number"],
+          "isUnique": false
+        },
+        "lottoResultNumber_lottoResultId_number_order": {
+          "name": "lottoResultNumber_lottoResultId_number_order",
+          "columns": ["lotto_result_id", "number", "order"],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "lotto_result__number_lotto_result_id_lotto_result_id_fk": {
+          "name": "lotto_result__number_lotto_result_id_lotto_result_id_fk",
+          "tableFrom": "lotto_result__number",
+          "tableTo": "lotto_result",
+          "columnsFrom": ["lotto_result_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
