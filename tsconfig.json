@@ -21,8 +21,27 @@
     "paths": {
       "@lotto-tracker/ui": ["./packages/ui/index.ts"],
       "@lotto-tracker/scrapper": ["./packages/scrapper/index.ts"],
-      "@lotto-tracker/drizzle": ["./packages/drizzle/index.ts"]
-    }
+      "@lotto-tracker/drizzle": ["./packages/drizzle/index.ts"],
+      "@lotto-tracker/base": ["./packages/base/index.ts"],
+      "@lotto-tracker/repositories": ["./packages/repositories/index.ts"]
+    },
+
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

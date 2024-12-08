@@ -1,5 +1,15 @@
 import { TZDate } from '@date-fns/tz';
-import { lotto, LottoId, lottoResult } from '@lotto-tracker/drizzle';
+import {
+  LOTTO_IDS,
+  LottoId,
+  PCSO_6_42_LOTTO_GAME_ID,
+  PCSO_6_45_LOTTO_GAME_ID,
+  PCSO_6_49_LOTTO_GAME_ID,
+  PCSO_6_55_LOTTO_GAME_ID,
+  PCSO_6_58_LOTTO_GAME_ID,
+} from '@lotto-tracker/base';
+import { lotto, lottoResult } from '@lotto-tracker/drizzle';
+import { getLastCrawledAt } from '@lotto-tracker/repositories';
 import { endOfYear, isSameDay } from 'date-fns';
 import puppeteer from 'puppeteer';
 import { tabletojson } from 'tabletojson';
@@ -12,15 +22,21 @@ async function sleep(ms: number) {
 export async function scrapAll() {
   const lottosLastCrawled = new Map<
     LottoId,
-    { lastCrawledAt: Date | null; pcsoId: typeof lotto.$inferSelect.pcsoId }
+    { lastCrawledAt: Date; pcsoId: typeof lotto.$inferSelect.pcsoId }
   >();
 
-  // TODO: Query for each LottoId, get LastCrawled;
-  lottosLastCrawled.set('PCSO_6_42', { lastCrawledAt: null, pcsoId: '13' });
-  lottosLastCrawled.set('PCSO_6_49', { lastCrawledAt: null, pcsoId: '1' });
-  lottosLastCrawled.set('PCSO_6_45', { lastCrawledAt: null, pcsoId: '2' });
-  lottosLastCrawled.set('PCSO_6_58', { lastCrawledAt: null, pcsoId: '18' });
-  lottosLastCrawled.set('PCSO_6_55', { lastCrawledAt: null, pcsoId: '17' });
+  for (const lottoId of LOTTO_IDS) {
+    const lastCrawled = await getLastCrawledAt(lottoId);
+    if (!lastCrawled) {
+      throw new Error(
+        `Cannot determine the last crawled data for lotto: ${lottoId}`,
+      );
+    }
+    lottosLastCrawled.set(lottoId, {
+      lastCrawledAt: lastCrawled.lotto_result.drawAt,
+      pcsoId: lastCrawled.lotto.pcsoId,
+    });
+  }
 
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
@@ -46,11 +62,15 @@ export async function scrapAll() {
       continue;
     }
 
-    let currYear = lastCrawledAt ? lastCrawledAt.getFullYear() : 2014;
+    let currYear = lastCrawledAt ? lastCrawledAt.getFullYear() : 2024;
     let forceStop = false;
     while (currYear <= phDate.getFullYear() && !forceStop) {
       console.log(`> will scrap ${currYear}...`);
-      const fromDate = new Date(currYear, 0, 1);
+      const fromDate = new Date(
+        currYear,
+        Math.max(lastCrawledAt.getMonth() - 2, 0),
+        1,
+      );
       const yearLastDay = endOfYear(fromDate);
       const fromMonth = monthFormat.format(fromDate);
       const fromDay = fromDate.getDate().toString();
@@ -59,15 +79,14 @@ export async function scrapAll() {
       const toDay = yearLastDay.getDate().toString();
       const toYear = yearFormat.format(yearLastDay).toString();
 
-      const resultFileName = `/Users/arvil/Projects/lotto-tracker/results/${lottoId}/${fromYear}-${fromMonth}-${fromDay}_${toYear}-${toMonth}-${toDay}.json`;
-
-      if (await Bun.file(resultFileName).exists()) {
-        console.log(
-          `${lottoId} at ${currYear} was already crawled, skipping...`,
-        );
-        currYear = currYear + 1;
-        continue;
-      }
+      // const resultFileName = `/Users/arvil/Projects/lotto-tracker/results/${lottoId}/${fromYear}-${fromMonth}-${fromDay}_${toYear}-${toMonth}-${toDay}.json`;
+      // if (await Bun.file(resultFileName).exists()) {
+      //   console.log(
+      //     `${lottoId} at ${currYear} was already crawled, skipping...`,
+      //   );
+      //   currYear = currYear + 1;
+      //   continue;
+      // }
 
       // Go
       await page.goto(
@@ -132,12 +151,12 @@ export async function scrapAll() {
 
       await page.focus('#search-lotto #cphContainer_cpContent_btnSearch');
       console.log(`clicking submit...`);
-      await page.screenshot({
-        path:
-          '/Users/arvil/Projects/lotto-tracker/screenshots/' +
-          new Date().getMilliseconds().toString() +
-          '.jpg',
-      });
+      // await page.screenshot({
+      //   path:
+      //     '/Users/arvil/Projects/lotto-tracker/screenshots/' +
+      //     new Date().getMilliseconds().toString() +
+      //     '.jpg',
+      // });
       await page
         .locator('#search-lotto #cphContainer_cpContent_btnSearch')
         .click();
@@ -185,7 +204,7 @@ export async function scrapAll() {
         WINNERS: string;
       }[] = tablesAsJson[0];
 
-      await Bun.write(resultFileName, JSON.stringify(results));
+      // await Bun.write(resultFileName, JSON.stringify(results));
 
       const lastResult = results[results.length - 1];
       if (!lastResult) {
@@ -193,9 +212,45 @@ export async function scrapAll() {
         forceStop = true;
         continue;
       }
+
+      const _lottoId = lastResult['LOTTO GAME'].includes('6/42')
+        ? PCSO_6_42_LOTTO_GAME_ID
+        : lastResult['LOTTO GAME'].includes('6/45')
+          ? PCSO_6_45_LOTTO_GAME_ID
+          : lastResult['LOTTO GAME'].includes('6/49')
+            ? PCSO_6_49_LOTTO_GAME_ID
+            : lastResult['LOTTO GAME'].includes('6/55')
+              ? PCSO_6_55_LOTTO_GAME_ID
+              : lastResult['LOTTO GAME'].includes('6/58')
+                ? PCSO_6_58_LOTTO_GAME_ID
+                : null;
+      if (!_lottoId) {
+        throw new Error(
+          `Lotto game for ${lastResult['LOTTO GAME']} is not supported in the database`,
+        );
+      }
       const drawDate = (
         (lastResult['DRAW DATE'] satisfies string).split('/') as string[]
       ).map((n) => parseInt(n));
+      if (drawDate.length !== 3) {
+        console.log(
+          `> Draw Date ${lastResult['DRAW DATE']} should only contain 2 slashes, force stopping...`,
+        );
+        forceStop = true;
+        continue;
+      }
+      if (
+        drawDate.length < 3 ||
+        drawDate[2] === undefined ||
+        drawDate[0] === undefined ||
+        drawDate[1] === undefined
+      ) {
+        console.log(
+          `> Cannot parse Draw Date for ${lastResult['DRAW DATE']}, force stopping...`,
+        );
+        forceStop = true;
+        continue;
+      }
       lastCrawledAt = new TZDate(
         drawDate[2],
         drawDate[0] - 1,
@@ -211,17 +266,28 @@ export async function scrapAll() {
             const _drawDate = (
               (node['DRAW DATE'] satisfies string).split('/') as string[]
             ).map((n) => parseInt(n));
+            if (
+              _drawDate.length < 3 ||
+              _drawDate[2] === undefined ||
+              _drawDate[0] === undefined ||
+              _drawDate[1] === undefined
+            ) {
+              throw new Error(
+                `> Cannot parse Draw Date for ${node['DRAW DATE']}, force stopping...`,
+              );
+            }
             const drawAt = new TZDate(
               _drawDate[2],
               _drawDate[0] - 1,
               _drawDate[1],
               'Asia/Manila',
             );
+            const resultCombinations = (
+              (node['COMBINATIONS'] satisfies string).split('-') as string[]
+            ).map((n) => parseInt(n));
             return {
-              lottoId,
-              result: (
-                (node['COMBINATIONS'] satisfies string).split('-') as string[]
-              ).map((n) => parseInt(n)),
+              lottoId: _lottoId,
+              result: resultCombinations,
               drawAt,
               winners: parseInt(node['WINNERS']),
               jackpotPrize: parseInt(node['JACKPOT (PHP)'].replace(/,/g, '')),
@@ -233,4 +299,5 @@ export async function scrapAll() {
       await sleep(3_000);
     }
   }
+  browser.close();
 }

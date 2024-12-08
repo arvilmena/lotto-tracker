@@ -1,15 +1,6 @@
+import { LottoId } from '@lotto-tracker/base';
 import { index, int, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 import { dateFnsTzDate } from './custom-column-types';
-
-export const LOTTO_IDS = [
-  'PCSO_6_49',
-  'PCSO_6_42',
-  'PCSO_6_45',
-  'PCSO_6_55',
-  'PCSO_6_58',
-] as const;
-
-export type LottoId = (typeof LOTTO_IDS)[number];
 
 export const lotto = sqliteTable(
   'lotto',
