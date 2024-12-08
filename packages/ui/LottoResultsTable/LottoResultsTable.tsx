@@ -17,8 +17,31 @@ interface LottoResultsTableProps {
 }
 
 export function LottoResultsTable({ results }: LottoResultsTableProps) {
+  const numberParser = z.coerce.number();
+  const shouldBetLargerThan = 100_000_000;
+  const shouldBetOverall =
+    results.filter((result) => {
+      const { data: _jackpotPrize } = numberParser.safeParse(
+        result.jackpotPrize,
+      );
+      return _jackpotPrize && _jackpotPrize >= shouldBetLargerThan;
+    }).length > 0;
   return (
-    <div className="overflow-x-auto">
+    <>
+      <h1 className="text-center">
+        Should I bet today?{' '}
+        <>
+          <span
+            className={clsx({
+              'text-green-500': shouldBetOverall,
+              'text-red-500': !shouldBetOverall,
+            })}
+          >
+            {shouldBetOverall && <>Yes!</>}
+            {!shouldBetOverall && <>No</>}
+          </span>
+        </>
+      </h1>
       <table className="min-w-full border-collapse border border-gray-300">
         <thead className="">
           <tr>
@@ -30,13 +53,13 @@ export function LottoResultsTable({ results }: LottoResultsTableProps) {
         </thead>
         <tbody>
           {results.map((result) => {
-            const numberParser = z.coerce.number();
             const { success: successParsingWinners, data: _winners } =
               numberParser.safeParse(result.winners);
             const { data: _jackpotPrize } = numberParser.safeParse(
               result.jackpotPrize,
             );
-            const shouldBet = _jackpotPrize && _jackpotPrize >= 100_000_000;
+            const shouldBet =
+              _jackpotPrize && _jackpotPrize >= shouldBetLargerThan;
             return (
               <tr key={result.id} className="hover:bg-gray-600">
                 <td
@@ -74,6 +97,10 @@ export function LottoResultsTable({ results }: LottoResultsTableProps) {
           })}
         </tbody>
       </table>
-    </div>
+      <p className="text-center">
+        Jackpot price should be larger than ₱
+        {shouldBetLargerThan.toLocaleString()}
+      </p>
+    </>
   );
 }
