@@ -47,10 +47,12 @@ jobs:
         run: pwd
       - name: Install dependencies
         run: bun install --frozen-lockfile
-
       - name: Setup .env
-        run: echo "DB_FILE_NAME=mydb.sqlite" > .env
-        run: echo "ROOT_PATH=/home/runner/work/lotto-tracker/lotto-tracker" >> .env
+        run: |
+          MULTI_LINES_TEXT="DB_FILE_NAME=mydb.sqlite \n
+                            ROOT_PATH=/home/runner/work/lotto-tracker/lotto-tracker"    
+
+          echo "MULTI_LINES_TEXT_ENV_VAR<<EOF" >> .env
       - name: Lint
         run: bun run lint
       - name: DB migrate
