@@ -45,14 +45,14 @@ jobs:
 
       - name: Check pwd
         run: pwd
+      - name: Create .env file
+        run: |
+          echo "DB_FILE_NAME=mydb.sqlite" >> .env
+          echo "ROOT_PATH=/Users/arvil/Projects/lotto-tracker" >> .env
+      - name: Verify .env file
+        run: cat .env
       - name: Install dependencies
         run: bun install --frozen-lockfile
-      - name: Setup .env
-        run: |
-          MULTI_LINES_TEXT="DB_FILE_NAME=mydb.sqlite \n
-                            ROOT_PATH=/home/runner/work/lotto-tracker/lotto-tracker"    
-
-          echo "MULTI_LINES_TEXT_ENV_VAR<<EOF" >> .env
       - name: Lint
         run: bun run lint
       - name: DB migrate
