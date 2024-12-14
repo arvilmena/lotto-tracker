@@ -1,4 +1,5 @@
 import { TZDate } from '@date-fns/tz';
+import { PHILIPPINES_TIMEZONE } from '@lotto-tracker/base';
 import { format } from 'date-fns';
 import { customType } from 'drizzle-orm/sqlite-core';
 import { z } from 'zod';
@@ -16,7 +17,7 @@ export const dateFnsTzDate = customType<{
     // return dbDateStringToLuxon(value);
     // const i = parse(value, 'yyyy:MM:dd HH:mm:ss', new Date());
     // console.log({ i });
-    return new TZDate(value, 'UTC').withTimeZone('Asia/Manila');
+    return new TZDate(value, 'UTC').withTimeZone(PHILIPPINES_TIMEZONE);
   },
   toDriver(value: TZDate): string {
     // console.log('toDriver', { value, type: typeof value });

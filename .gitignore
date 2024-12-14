@@ -44,5 +44,5 @@ next-env.d.ts
 /mydb.sqlite*
 
 # app data
-/results
-/screenshots
+/results/*
+!/results/old-results.json

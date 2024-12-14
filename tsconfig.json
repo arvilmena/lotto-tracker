@@ -23,7 +23,8 @@
       "@lotto-tracker/scrapper": ["./packages/scrapper/index.ts"],
       "@lotto-tracker/drizzle": ["./packages/drizzle/index.ts"],
       "@lotto-tracker/base": ["./packages/base/index.ts"],
-      "@lotto-tracker/repositories": ["./packages/repositories/index.ts"]
+      "@lotto-tracker/repositories": ["./packages/repositories/index.ts"],
+      "@lotto-tracker/config": ["./packages/config/index.ts"]
     },
 
     "forceConsistentCasingInFileNames": true,

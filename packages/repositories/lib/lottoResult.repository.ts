@@ -17,10 +17,10 @@ export const insertLottoResultSchema = createInsertSchema(lottoResult, {
   drawAt: () => dateFnsTzDateSchema,
   result: () => numberArrayJsonSchema,
 });
-type LottoResultDbInsertType = z.infer<typeof insertLottoResultSchema>;
+export type LottoResultDbInsertType = z.infer<typeof insertLottoResultSchema>;
 
 export async function dbInsertLottoResult(value: LottoResultDbInsertType) {
-  console.log(`inserting: `, value);
+  // console.log(`inserting: `, value);
   const [newLottoResult] = await db
     .insert(lottoResult)
     .values(value)

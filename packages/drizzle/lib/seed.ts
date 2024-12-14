@@ -35,7 +35,7 @@ async function main() {
     _lottos.map(async (l) =>
       lottoSaveLimit(async () => {
         console.log(`inserting: ${l.name}...`);
-        const saved = await db.insert(lotto).values(l);
+        const saved = await db.insert(lotto).values(l).onConflictDoNothing();
         console.log(`> inserted!`);
         return saved;
       }),

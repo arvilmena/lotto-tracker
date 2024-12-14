@@ -23,6 +23,14 @@ Date
 
 - Use TzDate from @date-fns/tz for dates that have to be saved in the database.
 
+Javascript Runtime
+
+- Use bun and it's API for the javascript runtime.
+
+Async/Await
+
+- Use async/await for all asynchronous operations.
+
 Syntax and Formatting
 
 - Use the "function" keyword for pure functions.
