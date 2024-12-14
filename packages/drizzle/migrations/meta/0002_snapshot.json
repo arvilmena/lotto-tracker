@@ -1,0 +1,230 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "24005f70-2c8d-4d52-a730-0860d4858bc2",
+  "prevId": "464da66e-3565-4167-8fd4-c8d0b92c005f",
+  "tables": {
+    "lotto": {
+      "name": "lotto",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "pcsoId": {
+          "name": "pcsoId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "lotto_pcsoId": {
+          "name": "lotto_pcsoId",
+          "columns": ["pcsoId"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "lotto_result": {
+      "name": "lotto_result",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "lotto_id": {
+          "name": "lotto_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "drawAt": {
+          "name": "drawAt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "result": {
+          "name": "result",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "jackpotPrize": {
+          "name": "jackpotPrize",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "winners": {
+          "name": "winners",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "lottoResult_lottoId": {
+          "name": "lottoResult_lottoId",
+          "columns": ["lotto_id"],
+          "isUnique": false
+        },
+        "lottoResult_drawAt": {
+          "name": "lottoResult_drawAt",
+          "columns": ["drawAt"],
+          "isUnique": false
+        },
+        "lottoResult_lottoId_drawAt": {
+          "name": "lottoResult_lottoId_drawAt",
+          "columns": ["lotto_id", "drawAt"],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "lotto_result_lotto_id_lotto_id_fk": {
+          "name": "lotto_result_lotto_id_lotto_id_fk",
+          "tableFrom": "lotto_result",
+          "tableTo": "lotto",
+          "columnsFrom": ["lotto_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "lotto_result__number": {
+      "name": "lotto_result__number",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "lotto_result_id": {
+          "name": "lotto_result_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "number": {
+          "name": "number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lotto_id": {
+          "name": "lotto_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "drawAt": {
+          "name": "drawAt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "lottoResultNumber_lottoResultId_number": {
+          "name": "lottoResultNumber_lottoResultId_number",
+          "columns": ["lotto_result_id", "number"],
+          "isUnique": false
+        },
+        "lottoResultNumber_lottoId": {
+          "name": "lottoResultNumber_lottoId",
+          "columns": ["lotto_id"],
+          "isUnique": false
+        },
+        "lottoResultNumber_lottoId_number": {
+          "name": "lottoResultNumber_lottoId_number",
+          "columns": ["lotto_id", "number"],
+          "isUnique": false
+        },
+        "lottoResultNumber_lottoResultId_number_order": {
+          "name": "lottoResultNumber_lottoResultId_number_order",
+          "columns": ["lotto_result_id", "number", "order"],
+          "isUnique": true
+        },
+        "lottoResultNumber_lottoId_drawAt_number": {
+          "name": "lottoResultNumber_lottoId_drawAt_number",
+          "columns": ["lotto_id", "drawAt", "number"],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "lotto_result__number_lotto_result_id_lotto_result_id_fk": {
+          "name": "lotto_result__number_lotto_result_id_lotto_result_id_fk",
+          "tableFrom": "lotto_result__number",
+          "tableTo": "lotto_result",
+          "columnsFrom": ["lotto_result_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "lotto_result__number_lotto_id_lotto_id_fk": {
+          "name": "lotto_result__number_lotto_id_lotto_id_fk",
+          "tableFrom": "lotto_result__number",
+          "tableTo": "lotto",
+          "columnsFrom": ["lotto_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

@@ -1,0 +1,1 @@
+DROP TABLE `lotto_result__number`;

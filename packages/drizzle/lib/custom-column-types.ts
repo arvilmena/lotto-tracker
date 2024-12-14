@@ -1,6 +1,7 @@
 import { TZDate } from '@date-fns/tz';
 import { format } from 'date-fns';
 import { customType } from 'drizzle-orm/sqlite-core';
+import { z } from 'zod';
 
 export const dateFnsTzDate = customType<{
   data: TZDate;
@@ -24,3 +25,24 @@ export const dateFnsTzDate = customType<{
     return toDriver as string;
   },
 });
+
+export const dateFnsTzDateSchema = z.instanceof(TZDate);
+
+export const numberArrayJson = customType<{
+  data: NumberArrayType;
+  driverData: string;
+  dataType: Date;
+}>({
+  dataType() {
+    return 'text';
+  },
+  fromDriver(value: string): NumberArrayType {
+    return numberArrayJsonSchema.parse(JSON.parse(value));
+  },
+  toDriver(value: NumberArrayType): string {
+    return JSON.stringify(value);
+  },
+});
+
+export const numberArrayJsonSchema = z.array(z.number());
+export type NumberArrayType = z.infer<typeof numberArrayJsonSchema>;

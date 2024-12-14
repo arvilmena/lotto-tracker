@@ -8,12 +8,15 @@ import {
   PCSO_6_55_LOTTO_GAME_ID,
   PCSO_6_58_LOTTO_GAME_ID,
 } from '@lotto-tracker/base';
-import { lotto, lottoResult } from '@lotto-tracker/drizzle';
-import { getLastCrawledAt } from '@lotto-tracker/repositories';
+import { lotto } from '@lotto-tracker/drizzle';
+import {
+  dbInsertLottoResult,
+  getLastCrawledAt,
+} from '@lotto-tracker/repositories';
 import { endOfYear, isSameDay } from 'date-fns';
+import pLimit from 'p-limit';
 import puppeteer from 'puppeteer';
 import { tabletojson } from 'tabletojson';
-import { db } from '../../drizzle/lib/db';
 
 async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -259,12 +262,13 @@ export async function scrapAll() {
       );
       currYear = currYear + 1;
 
-      await db
-        .insert(lottoResult)
-        .values(
-          results.map((node) => {
+      const saveLimit = pLimit(3);
+
+      await Promise.all(
+        results.map(async (result) =>
+          saveLimit(async () => {
             const _drawDate = (
-              (node['DRAW DATE'] satisfies string).split('/') as string[]
+              (result['DRAW DATE'] satisfies string).split('/') as string[]
             ).map((n) => parseInt(n));
             if (
               _drawDate.length < 3 ||
@@ -273,7 +277,7 @@ export async function scrapAll() {
               _drawDate[1] === undefined
             ) {
               throw new Error(
-                `> Cannot parse Draw Date for ${node['DRAW DATE']}, force stopping...`,
+                `> Cannot parse Draw Date for ${result['DRAW DATE']}, force stopping...`,
               );
             }
             const drawAt = new TZDate(
@@ -283,18 +287,18 @@ export async function scrapAll() {
               'Asia/Manila',
             );
             const resultCombinations = (
-              (node['COMBINATIONS'] satisfies string).split('-') as string[]
+              (result['COMBINATIONS'] satisfies string).split('-') as string[]
             ).map((n) => parseInt(n));
-            return {
+            await dbInsertLottoResult({
               lottoId: _lottoId,
               result: resultCombinations,
               drawAt,
-              winners: parseInt(node['WINNERS']),
-              jackpotPrize: parseInt(node['JACKPOT (PHP)'].replace(/,/g, '')),
-            };
+              winners: parseInt(result['WINNERS']),
+              jackpotPrize: parseInt(result['JACKPOT (PHP)'].replace(/,/g, '')),
+            });
           }),
-        )
-        .onConflictDoNothing();
+        ),
+      );
 
       await sleep(3_000);
     }

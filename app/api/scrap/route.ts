@@ -6,6 +6,6 @@ async function serverScrapAll() {
 }
 
 export async function GET() {
-  serverScrapAll();
+  await serverScrapAll();
   return new Response('Hello, from API!');
 }
