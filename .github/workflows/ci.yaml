@@ -56,7 +56,7 @@ jobs:
       - name: Lint
         run: bun run lint
       - name: DB migrate
-        run: bun run db:seed
+        run: bun run db:migrate
       - name: DB Seed
         run: bun run db:seed
       - name: Build with Next.js
