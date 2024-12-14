@@ -7,5 +7,5 @@ async function serverScrapAll() {
 
 export async function GET() {
   await serverScrapAll();
-  return new Response('Hello, from API!');
+  return Response.json({ message: 'Scraping completed successfully' });
 }
