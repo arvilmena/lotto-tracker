@@ -27,9 +27,10 @@ ENV NODE_ENV=production
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/data ./data
 # COPY --from=builder /app/data/mydb.sqlite ./data/mydb.sqlite
 
 EXPOSE 3000
-ENV DB_FILE_NAME="data/mydb.sqlite"
+ENV DB_FILE_NAME="/app/data/mydb.sqlite"
 ENV ROOT_PATH="/app"
 CMD ["bun", "run", "server.js"]
