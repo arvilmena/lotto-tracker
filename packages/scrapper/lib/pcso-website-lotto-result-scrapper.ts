@@ -127,7 +127,7 @@ async function getAllLottoLastCrawledAtAndPcsoId() {
 export async function scrapAll() {
   console.log('starting scrapAll()...');
   const lottosLastCrawled = await getAllLottoLastCrawledAtAndPcsoId();
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.setViewport({ width: 1900, height: 1080 });
 

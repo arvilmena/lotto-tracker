@@ -1,0 +1,10 @@
+.git
+.next
+node_modules
+.env*
+.dockerignore
+Dockerfile
+*.md
+.husky
+.github
+results 
