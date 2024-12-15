@@ -3,7 +3,7 @@ import { LOTTO_IDS, LottoId, PHILIPPINES_TIMEZONE } from '@lotto-tracker/base';
 import { lotto } from '@lotto-tracker/drizzle';
 import { getLastCrawledAt } from '@lotto-tracker/repositories';
 import { endOfYear, isSameDay, startOfDay, subDays } from 'date-fns';
-import puppeteer, { Page } from 'puppeteer';
+import puppeteer, { Browser, Page } from 'puppeteer';
 import { tabletojson } from 'tabletojson';
 import {
   parseLottoRowResults,
@@ -127,7 +127,15 @@ async function getAllLottoLastCrawledAtAndPcsoId() {
 export async function scrapAll() {
   console.log('starting scrapAll()...');
   const lottosLastCrawled = await getAllLottoLastCrawledAtAndPcsoId();
-  const browser = await puppeteer.launch({ headless: true });
+
+  let browser: Browser;
+  try {
+    browser = await puppeteer.launch({ headless: true });
+  } catch (error) {
+    console.error('Error launching browser:', JSON.stringify(error));
+    throw error;
+  }
+
   const page = await browser.newPage();
   await page.setViewport({ width: 1900, height: 1080 });
 
