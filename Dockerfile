@@ -30,6 +30,6 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/mydb.sqlite ./mydb.sqlite
 
 EXPOSE 3000
-ENV DB_FILE_NAME="mydb.sqlite"
+ENV DB_FILE_NAME="data/mydb.sqlite"
 ENV ROOT_PATH="/app"
 CMD ["bun", "run", "server.js"]

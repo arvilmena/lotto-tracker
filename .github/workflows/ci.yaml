@@ -47,8 +47,8 @@ jobs:
         run: pwd
       - name: Create .env file
         run: |
-          echo "DB_FILE_NAME=mydb.sqlite" >> .env
-          echo "ROOT_PATH=/Users/arvil/Projects/lotto-tracker" >> .env
+          echo "DB_FILE_NAME=data/mydb.sqlite" >> .env
+          echo "ROOT_PATH=/app" >> .env
       - name: Verify .env file
         run: cat .env
       - name: Install dependencies

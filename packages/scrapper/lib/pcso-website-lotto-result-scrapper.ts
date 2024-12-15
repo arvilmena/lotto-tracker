@@ -111,6 +111,9 @@ async function getAllLottoLastCrawledAtAndPcsoId() {
   for (const lottoId of LOTTO_IDS) {
     const lastCrawled = await getLastCrawledAt(lottoId);
     if (!lastCrawled) {
+      console.log(
+        `Cannot determine the last crawled data for lotto: ${lottoId}`,
+      );
       throw new Error(
         `Cannot determine the last crawled data for lotto: ${lottoId}`,
       );
@@ -132,7 +135,7 @@ export async function scrapAll() {
   try {
     browser = await puppeteer.launch({ headless: true });
   } catch (error) {
-    console.error('Error launching browser:', JSON.stringify(error));
+    console.log('Error launching browser:', JSON.stringify(error));
     throw error;
   }
 

@@ -1,3 +1,4 @@
+import { MY_CONFIG } from '@lotto-tracker/config';
 import { readdir, readFile, writeFile } from 'fs/promises';
 import path from 'path';
 import { z } from 'zod';
@@ -57,8 +58,7 @@ async function crawlJsonFiles(directory: string): Promise<RawLottoRowResult[]> {
   return allEntries;
 }
 
-const ROOT_PATH = '/Users/arvil/Projects/lotto-tracker';
-const resultsPath = path.resolve(ROOT_PATH, 'results');
+const resultsPath = path.resolve(MY_CONFIG.ROOT_PATH, 'results');
 
 async function combineOldResults() {
   try {
