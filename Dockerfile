@@ -18,7 +18,7 @@ ENV DB_FILE_NAME="mydb.sqlite"
 ENV ROOT_PATH="/app"
 RUN bun run db:migrate
 RUN bun run db:seed
-RUN bun run build --no-lint --debug
+RUN bun run build --debug
 
 # Stage 3: Production server
 FROM base AS runner
