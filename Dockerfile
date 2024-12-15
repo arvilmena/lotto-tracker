@@ -27,7 +27,7 @@ ENV NODE_ENV=production
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/data/mydb.sqlite ./data/mydb.sqlite
+# COPY --from=builder /app/data/mydb.sqlite ./data/mydb.sqlite
 
 EXPOSE 3000
 ENV DB_FILE_NAME="data/mydb.sqlite"
